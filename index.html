@@ -82,11 +82,54 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
 .auto-reset{margin:18px auto 0;color:#8cb9d6;font-size:12px;letter-spacing:1.2px;line-height:1.6;text-align:center;text-transform:uppercase;animation:pulse 1.8s ease-in-out infinite}
 
 
+
+/* Organizer question manager */
+.manager-overlay{position:fixed;z-index:30;inset:0;display:none;overflow:auto;overscroll-behavior:contain;padding:16px;background:rgba(1,7,18,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.manager-overlay.open{display:block}
+.manager-shell{width:min(100%,760px);margin:0 auto;display:flex;flex-direction:column;gap:13px;padding:8px 0 30px}
+.gate-shell{min-height:100%;justify-content:center;max-width:460px}
+.manager-card{width:100%;padding:16px;border:1px solid #42eaff44;border-radius:15px;background:linear-gradient(145deg,#0a2440f5,#061426f5);box-shadow:0 10px 35px #0007}
+.gate-card{text-align:center;padding:24px 18px}
+.manager-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}
+.manager-top h2{font-size:clamp(19px,4.8vw,28px);margin-top:6px}
+.manager-help{margin:0;color:#a9c4dc;font-size:16px;line-height:1.4}
+.manager-toolbar{display:flex;flex-wrap:wrap;gap:8px}
+.manager-toolbar button,.import-label{flex:1;min-width:145px;min-height:48px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;text-align:center}
+.import-label{cursor:pointer}
+.import-label input{display:none}
+.manager-section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;color:var(--cyan);font:700 12px Orbitron,Arial;letter-spacing:.1em}
+.question-list{display:grid;gap:8px;max-height:340px;overflow:auto}
+.question-item{padding:11px;border:1px solid #2e81ae66;border-radius:10px;background:#071a30;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.question-item.selected{border-color:var(--cyan);box-shadow:0 0 12px #42eaff22}
+.question-item-text{color:#e8f7ff;font-size:16px;line-height:1.25;text-align:left}
+.question-item-sub{display:block;margin-top:4px;color:#7fa9c8;font-size:12px}
+.question-item-actions{display:flex;gap:6px}
+.question-item-actions button{min-height:38px;padding:8px 10px;font-size:10px;border-radius:8px}
+.manager-label{display:block;margin:13px 0 6px;color:#8eb8d8;font:600 10px Orbitron,Arial;letter-spacing:.09em}
+.manager-input{width:100%;min-height:46px;padding:11px 12px;border-radius:9px;border:1px solid #347da8;background:#031426;color:#f0fbff;font:600 17px Rajdhani,Arial;outline:none}
+.manager-input:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #42eaff22}
+.manager-textarea{resize:vertical;min-height:68px}
+.manager-option-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.manager-actions{display:flex;gap:9px;margin-top:13px}
+.manager-actions button{flex:1;font-size:12px}
+.manager-status{min-height:20px;margin:8px 0 0;color:var(--green);font-size:14px}
+.manager-error{min-height:22px;margin:8px 0;color:#ff8ca4;font-size:14px}
+.pin-input{text-align:center;letter-spacing:.3em;font:700 22px Orbitron,Arial;margin-top:16px}
+.close-manager{min-height:44px;padding:10px 13px;font-size:11px}
+.pin-settings{display:grid;gap:7px}
+.pin-settings .manager-section-title{margin-bottom:0}
+.pin-settings .manager-help{margin-bottom:4px}
+.pin-settings .manager-input{margin:0}
+.manager-bottom{text-align:center}
+.manager-bottom button{width:100%;min-height:48px;font-size:11px}
+.manager-bottom .manager-help{margin-top:10px;font-size:14px}
+@media(max-width:430px){.manager-overlay{padding:10px}.manager-card{padding:13px}.manager-toolbar{display:grid;grid-template-columns:1fr 1fr}.manager-toolbar .primary{grid-column:1/-1}.question-item{grid-template-columns:1fr}.question-item-actions button{flex:1}.manager-actions button{padding:13px 8px;font-size:10px}}
+
 </style>
 </head>
 <body>
 <div id="app">
- <header class="top"><div class="brand"><div class="mark">⚡</div><span>IIEE POWER CHALLENGE</span></div><span>TOUCH KIOSK</span></header>
+ <header class="top"><div class="brand" id="adminTrigger" title="Organizer access"><div class="mark">⚡</div><span>IIEE POWER CHALLENGE</span></div><span>TOUCH KIOSK</span></header>
  <main id="intro" class="screen active">
   <div class="eyebrow">ELECTRICAL ENGINEERING QUIZ</div>
   <div class="reactor-wrap"><div class="reactor"><div class="core"></div></div></div>
@@ -135,10 +178,85 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
   <p class="wrong-note" id="wrongMessage">That's okay. Give it another shot!</p>
   <p class="auto-reset">The next player can start shortly. Returning to the start screen automatically…</p>
  </main>
+
 <footer class="footer">IIEE • ELECTRICAL ENGINEERING KNOWLEDGE</footer>
 </div>
+
+<div id="pinGate" class="manager-overlay">
+ <div class="manager-shell gate-shell">
+  <div class="manager-card gate-card">
+   <div class="eyebrow">ORGANIZER ACCESS</div>
+   <h2>QUESTION MANAGER</h2>
+   <p class="manager-help">Enter the organizer PIN to edit the quiz.</p>
+   <input id="adminPinInput" class="manager-input pin-input" type="password" inputmode="numeric" maxlength="8" placeholder="Organizer PIN" autocomplete="off">
+   <p id="pinError" class="manager-error" aria-live="polite"></p>
+   <div class="manager-actions">
+    <button class="secondary" onclick="closePinGate()">CANCEL</button>
+    <button class="primary" onclick="unlockManager()">UNLOCK</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<div id="managerPanel" class="manager-overlay">
+ <div class="manager-shell">
+  <div class="manager-top">
+   <div>
+    <div class="eyebrow">EVENT ORGANIZER</div>
+    <h2>QUESTION MANAGER</h2>
+   </div>
+   <button class="secondary close-manager" onclick="closeManager()">CLOSE ✕</button>
+  </div>
+  <p class="manager-help">Edit the question bank for this kiosk. Changes are saved on this device and apply to the next player.</p>
+  <div class="manager-toolbar">
+   <button class="primary" onclick="newQuestion()">＋ ADD QUESTION</button>
+   <button class="secondary" onclick="downloadQuestionBackup()">EXPORT BACKUP</button>
+   <label class="secondary import-label">IMPORT BACKUP<input id="questionImport" type="file" accept=".json,application/json" onchange="importQuestionBackup(event)"></label>
+  </div>
+  <div class="manager-card">
+   <div class="manager-section-title">QUESTION BANK <span id="questionCount"></span></div>
+   <div id="questionList" class="question-list"></div>
+  </div>
+  <div class="manager-card">
+   <div class="manager-section-title" id="editorTitle">ADD QUESTION</div>
+   <label class="manager-label">QUESTION</label>
+   <textarea id="editQuestionText" class="manager-input manager-textarea" rows="3" placeholder="Type the question here"></textarea>
+   <div class="manager-option-grid">
+    <div><label class="manager-label">OPTION A</label><input id="editOption0" class="manager-input" placeholder="Option A"></div>
+    <div><label class="manager-label">OPTION B</label><input id="editOption1" class="manager-input" placeholder="Option B"></div>
+    <div><label class="manager-label">OPTION C</label><input id="editOption2" class="manager-input" placeholder="Option C"></div>
+    <div><label class="manager-label">OPTION D</label><input id="editOption3" class="manager-input" placeholder="Option D"></div>
+   </div>
+   <label class="manager-label">CORRECT ANSWER</label>
+   <select id="editCorrect" class="manager-input">
+    <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
+   </select>
+   <label class="manager-label">EXPLANATION (SHOWN AFTER A CORRECT ANSWER)</label>
+   <textarea id="editExplanation" class="manager-input manager-textarea" rows="2" placeholder="Explain why the answer is correct"></textarea>
+   <p id="editorMessage" class="manager-status" aria-live="polite"></p>
+   <div class="manager-actions">
+    <button class="secondary" onclick="newQuestion()">CLEAR</button>
+    <button class="primary" onclick="saveEditedQuestion()">SAVE QUESTION</button>
+   </div>
+  </div>
+  <div class="manager-card pin-settings">
+   <div class="manager-section-title">ORGANIZER PIN</div>
+   <p class="manager-help">Change the PIN before handing the kiosk to event staff. Use 4–8 digits.</p>
+   <input id="currentPinInput" class="manager-input" type="password" inputmode="numeric" maxlength="8" placeholder="Current PIN">
+   <input id="newPinInput" class="manager-input" type="password" inputmode="numeric" maxlength="8" placeholder="New PIN">
+   <input id="confirmPinInput" class="manager-input" type="password" inputmode="numeric" maxlength="8" placeholder="Confirm new PIN">
+   <p id="pinChangeMessage" class="manager-status" aria-live="polite"></p>
+   <button class="secondary" onclick="changeOrganizerPin()">CHANGE PIN</button>
+  </div>
+  <div class="manager-card manager-bottom">
+   <button class="secondary" onclick="restoreDefaultQuestions()">RESTORE DEFAULT QUESTIONS</button>
+   <p class="manager-help">Tip: Export a backup before making major changes. Imported question files replace the current question bank.</p>
+  </div>
+ </div>
+</div>
+
 <script>
-const QUESTIONS=[
+const DEFAULT_QUESTIONS=[
  {q:"What is the SI unit of electrical resistance?",a:["Volt","Ohm","Ampere","Watt"],c:1,e:"Electrical resistance is measured in ohms (Ω)."},
  {q:"Which law states that voltage equals current multiplied by resistance?",a:["Faraday's Law","Kirchhoff's Current Law","Ohm's Law","Lenz's Law"],c:2,e:"Ohm's Law is V = I × R."},
  {q:"In a purely resistive AC circuit, voltage and current are…",a:["90° out of phase","In phase","180° out of phase","Always unequal in frequency"],c:1,e:"A pure resistor does not shift the phase: voltage and current are in phase."},
@@ -150,6 +268,7 @@ const QUESTIONS=[
  {q:"A transformer operates on the principle of…",a:["Electromagnetic induction","Electrostatic attraction","Chemical reaction","Thermal expansion"],c:0,e:"A changing magnetic flux induces voltage in the transformer windings."},
  {q:"In a balanced three-phase system, the phase voltages are separated by…",a:["60 electrical degrees","90 electrical degrees","120 electrical degrees","180 electrical degrees"],c:2,e:"The three phase quantities are spaced 120 electrical degrees apart."}
 ];
+let QUESTIONS=loadQuestionBank();
 const ROUND_DURATION=15000;
 const WRONG_RESET_DELAY=5000;
 const PRIZE_CONFIRM_RESET_DELAY=6500;
@@ -223,6 +342,176 @@ function choosePrize(name,emoji){
  $('prizeAutoReset').classList.remove('hidden');
  transitionTimer=setTimeout(resetToIntro,PRIZE_CONFIRM_RESET_DELAY);
 }
+
+/* Organizer tools: browser-local question bank */
+const QUESTION_STORAGE_KEY='iieePowerChallengeQuestionsV1';
+const PIN_STORAGE_KEY='iieePowerChallengeOrganizerPin';
+const DEFAULT_ORGANIZER_PIN='2468';
+let editingQuestionIndex=-1;
+let adminTapTimes=[];
+
+function isValidQuestionBank(bank){
+ return Array.isArray(bank)&&bank.length>0&&bank.every(item=>
+  item&&typeof item.q==='string'&&item.q.trim()&&
+  Array.isArray(item.a)&&item.a.length===4&&
+  item.a.every(option=>typeof option==='string'&&option.trim())&&
+  Number.isInteger(Number(item.c))&&Number(item.c)>=0&&Number(item.c)<=3&&
+  typeof item.e==='string'
+ );
+}
+function loadQuestionBank(){
+ try{
+  const raw=localStorage.getItem(QUESTION_STORAGE_KEY);
+  if(!raw)return JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+  const parsed=JSON.parse(raw);
+  return isValidQuestionBank(parsed)?parsed:JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+ }catch(error){
+  console.warn('Could not load saved questions; using defaults.',error);
+  return JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+ }
+}
+function persistQuestionBank(){
+ try{
+  localStorage.setItem(QUESTION_STORAGE_KEY,JSON.stringify(QUESTIONS));
+  renderQuestionList();
+  return true;
+ }catch(error){
+  alert('Could not save questions on this browser. Check device storage settings.');
+  return false;
+ }
+}
+function escapeManagerText(value){
+ return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function getOrganizerPin(){return localStorage.getItem(PIN_STORAGE_KEY)||DEFAULT_ORGANIZER_PIN;}
+function openPinGate(){
+ $('adminPinInput').value='';$('pinError').textContent='';
+ $('pinGate').classList.add('open');
+ setTimeout(()=>$('adminPinInput').focus(),120);
+}
+function closePinGate(){$('pinGate').classList.remove('open');}
+function unlockManager(){
+ if($('adminPinInput').value!==getOrganizerPin()){
+  $('pinError').textContent='Incorrect PIN. Please try again.';
+  $('adminPinInput').value='';$('adminPinInput').focus();return;
+ }
+ closePinGate();$('managerPanel').classList.add('open');
+ renderQuestionList();newQuestion();
+}
+function closeManager(){
+ $('managerPanel').classList.remove('open');
+ $('questionImport').value='';
+}
+function renderQuestionList(){
+ const host=$('questionList');if(!host)return;
+ $('questionCount').textContent=QUESTIONS.length+' QUESTIONS';
+ host.innerHTML=QUESTIONS.map((item,index)=>`
+  <div class="question-item ${editingQuestionIndex===index?'selected':''}">
+   <div class="question-item-text"><strong>${index+1}.</strong> ${escapeManagerText(item.q)}
+    <span class="question-item-sub">Correct answer: ${String.fromCharCode(65+Number(item.c))} — ${escapeManagerText(item.a[Number(item.c)])}</span>
+   </div>
+   <div class="question-item-actions">
+    <button class="secondary" onclick="editQuestion(${index})">EDIT</button>
+    <button class="secondary" onclick="deleteQuestion(${index})">DELETE</button>
+   </div>
+  </div>`).join('');
+}
+function newQuestion(){
+ editingQuestionIndex=-1;
+ $('editorTitle').textContent='ADD QUESTION';
+ $('editQuestionText').value='';
+ for(let i=0;i<4;i++)$('editOption'+i).value='';
+ $('editCorrect').value='0';$('editExplanation').value='';
+ $('editorMessage').textContent='Enter a question and all four choices.';
+ renderQuestionList();
+}
+function editQuestion(index){
+ const item=QUESTIONS[index];if(!item)return;
+ editingQuestionIndex=index;
+ $('editorTitle').textContent='EDIT QUESTION '+(index+1);
+ $('editQuestionText').value=item.q;
+ item.a.forEach((answer,i)=>$('editOption'+i).value=answer);
+ $('editCorrect').value=String(item.c);$('editExplanation').value=item.e||'';
+ $('editorMessage').textContent='Make your changes, then save.';
+ renderQuestionList();
+ $('editQuestionText').focus();
+}
+function saveEditedQuestion(){
+ const question=$('editQuestionText').value.trim();
+ const answers=[0,1,2,3].map(i=>$('editOption'+i).value.trim());
+ const correct=Number($('editCorrect').value);
+ const explanation=$('editExplanation').value.trim();
+ if(!question||answers.some(answer=>!answer)){
+  $('editorMessage').textContent='Please fill in the question and all four choices.';return;
+ }
+ if(new Set(answers.map(answer=>answer.toLowerCase())).size!==4){
+  $('editorMessage').textContent='Each answer choice should be different.';return;
+ }
+ const item={q:question,a:answers,c:correct,e:explanation};
+ if(editingQuestionIndex<0)QUESTIONS.push(item);
+ else QUESTIONS[editingQuestionIndex]=item;
+ if(!persistQuestionBank())return;
+ editingQuestionIndex=QUESTIONS.length-1;
+ $('editorTitle').textContent='SAVED QUESTION '+(editingQuestionIndex+1);
+ $('editorMessage').textContent='Saved! This question can appear in the next play.';
+ renderQuestionList();
+}
+function deleteQuestion(index){
+ if(QUESTIONS.length<=1){alert('At least one question must remain in the question bank.');return;}
+ if(!confirm('Delete question '+(index+1)+'?'))return;
+ QUESTIONS.splice(index,1);
+ if(!persistQuestionBank())return;
+ newQuestion();
+ $('editorMessage').textContent='Question deleted.';
+}
+function restoreDefaultQuestions(){
+ if(!confirm('Replace all saved questions with the original 10 default questions? Export a backup first if needed.'))return;
+ QUESTIONS=JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+ editingQuestionIndex=-1;
+ if(!persistQuestionBank())return;
+ newQuestion();$('editorMessage').textContent='Original questions restored.';
+}
+function downloadQuestionBackup(){
+ const blob=new Blob([JSON.stringify(QUESTIONS,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement('a');link.href=url;link.download='iiee-game-questions-backup.json';
+ document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+}
+function importQuestionBackup(event){
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const parsed=JSON.parse(String(reader.result));
+   if(!isValidQuestionBank(parsed))throw new Error('Invalid question file format.');
+   if(!confirm('Import '+parsed.length+' questions and replace the current question bank?'))return;
+   QUESTIONS=parsed.map(item=>({q:item.q.trim(),a:item.a.map(x=>x.trim()),c:Number(item.c),e:item.e||''}));
+   editingQuestionIndex=-1;
+   if(persistQuestionBank()){newQuestion();$('editorMessage').textContent='Imported '+QUESTIONS.length+' questions successfully.';}
+  }catch(error){alert('Unable to import this file. Please use a valid IIEE question backup JSON.');}
+  finally{$('questionImport').value='';}
+ };
+ reader.onerror=()=>alert('Could not read the selected file.');
+ reader.readAsText(file);
+}
+function changeOrganizerPin(){
+ const current=$('currentPinInput').value;
+ const next=$('newPinInput').value;
+ const confirmNext=$('confirmPinInput').value;
+ const status=$('pinChangeMessage');
+ if(current!==getOrganizerPin()){status.textContent='Current PIN is incorrect.';return;}
+ if(!/^\d{4,8}$/.test(next)){status.textContent='New PIN must contain 4–8 digits.';return;}
+ if(next!==confirmNext){status.textContent='New PIN and confirmation do not match.';return;}
+ localStorage.setItem(PIN_STORAGE_KEY,next);
+ $('currentPinInput').value='';$('newPinInput').value='';$('confirmPinInput').value='';
+ status.textContent='Organizer PIN updated successfully.';
+}
+document.getElementById('adminTrigger').addEventListener('click',()=>{
+ const now=Date.now();adminTapTimes=adminTapTimes.filter(t=>now-t<2200);adminTapTimes.push(now);
+ if(adminTapTimes.length>=5){adminTapTimes=[];openPinGate();}
+});
+$('adminPinInput').addEventListener('keydown',event=>{if(event.key==='Enter')unlockManager();});
+
 document.addEventListener('keydown',e=>{if(e.key==='Escape')resetToIntro()});
 </script>
 </body></html>
