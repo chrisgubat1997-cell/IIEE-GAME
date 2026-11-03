@@ -377,21 +377,20 @@ button:active{transform:translateY(2px);filter:none}
   <h2>CHOOSE YOUR GAME</h2>
   <p class="sub">Select a challenge and play on the touchscreen.</p>
   <div class="mode-grid game-menu-grid">
-   <button class="mode-card" onclick="startMultipleChoice()"><span class="mode-icon">A</span><span class="mode-copy"><strong>MULTIPLE CHOICE</strong><small>Answer an electrical engineering question against the clock.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startCircuitGame()"><span class="mode-icon">⌁</span><span class="mode-copy"><strong>CIRCUIT MASTER</strong><small>Team relay: every group member gets a turn to build a circuit.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('troubleshooter')"><span class="mode-icon">⌕</span><span class="mode-copy"><strong>ELECTRICAL TROUBLESHOOTER</strong><small>Find the fault in a simple electrical setup.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('schematic')"><span class="mode-icon">⌗</span><span class="mode-copy"><strong>SCHEMATIC DECODER</strong><small>Identify symbols used in electrical diagrams.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('equipment')"><span class="mode-icon">▣</span><span class="mode-copy"><strong>IDENTIFY THE EQUIPMENT</strong><small>Name the electrical tool or equipment shown.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('calculation')"><span class="mode-icon">∑</span><span class="mode-copy"><strong>POWER CALCULATION</strong><small>Solve quick voltage, current, resistance and power problems.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('reaction')"><span class="mode-icon">◉</span><span class="mode-copy"><strong>REACTION CHALLENGE</strong><small>Test your focus and reaction speed.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startMiniGame('lucky')"><span class="mode-icon">✳</span><span class="mode-copy"><strong>LUCKY SPIN</strong><small>A quick random challenge or prize round.</small></span><span class="game-arrow">›</span></button>
-<div class="game-section-label">SOLO GAMES</div>
-   <button class="mode-card" onclick="startMemoryMatch()"><span class="mode-icon">▦</span><span class="mode-copy"><strong>MEMORY MATCH</strong><small>Match electrical symbols with their names.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startOhmSprint()"><span class="mode-icon">Ω</span><span class="mode-copy"><strong>OHM'S LAW SPRINT</strong><small>Solve quick electrical calculations.</small></span><span class="game-arrow">›</span></button>
-   <div class="game-section-label">COOPERATIVE TEAM GAMES</div>
-   <button class="mode-card" onclick="startCoopGame('relay')"><span class="mode-icon">↗</span><span class="mode-copy"><strong>TEAM POWER RELAY</strong><small>Take turns answering and build one shared score.</small></span><span class="game-arrow">›</span></button>
-   <button class="mode-card" onclick="startCoopGame('safety')"><span class="mode-icon">✓</span><span class="mode-copy"><strong>TEAM SAFETY RELAY</strong><small>Work together through electrical safety scenarios.</small></span><span class="game-arrow">›</span></button>
-  </div>
+    <div class="game-section-label">SOLO GAMES</div>
+    <button class="mode-card" onclick="startMultipleChoice()"><span class="mode-icon">A</span><span class="mode-copy"><strong>MULTIPLE CHOICE</strong><small>Answer electrical engineering questions on your own.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMiniGame('equipment')"><span class="mode-icon">▣</span><span class="mode-copy"><strong>IDENTIFY THE EQUIPMENT</strong><small>Name the electrical tool or equipment shown.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMiniGame('reaction')"><span class="mode-icon">◉</span><span class="mode-copy"><strong>REACTION CHALLENGE</strong><small>Test your focus and reaction speed.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMiniGame('calculation')"><span class="mode-icon">∑</span><span class="mode-copy"><strong>POWER CALCULATION</strong><small>Solve quick voltage, current, resistance and power problems.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMiniGame('lucky')"><span class="mode-icon">✳</span><span class="mode-copy"><strong>LUCKY SPIN</strong><small>A quick random challenge or prize round.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMemoryMatch()"><span class="mode-icon">▦</span><span class="mode-copy"><strong>MEMORY MATCH</strong><small>Match electrical symbols with their names.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startOhmSprint()"><span class="mode-icon">Ω</span><span class="mode-copy"><strong>OHM'S LAW SPRINT</strong><small>Solve quick electrical calculations.</small></span><span class="game-arrow">›</span></button>
+    <div class="game-section-label">TEAM GAMES • COOPERATIVE</div>
+    <button class="mode-card" onclick="startMiniGame('troubleshooter')"><span class="mode-icon">⌕</span><span class="mode-copy"><strong>ELECTRICAL TROUBLESHOOTER</strong><small>Take turns finding faults and build one shared score.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startMiniGame('schematic')"><span class="mode-icon">⌗</span><span class="mode-copy"><strong>SCHEMATIC DECODER</strong><small>Take turns identifying symbols with one shared score.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startCoopGame('relay')"><span class="mode-icon">↗</span><span class="mode-copy"><strong>TEAM POWER RELAY</strong><small>Take turns answering and build one shared score.</small></span><span class="game-arrow">›</span></button>
+    <button class="mode-card" onclick="startCoopGame('safety')"><span class="mode-icon">✓</span><span class="mode-copy"><strong>TEAM SAFETY RELAY</strong><small>Work together through electrical safety scenarios.</small></span><span class="game-arrow">›</span></button>
+   </div>
 
   <button class="secondary" onclick="resetToIntro()">BACK</button>
  </main>
