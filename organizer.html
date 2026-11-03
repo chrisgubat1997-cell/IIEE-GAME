@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061426">
+<title>IIEE Game — Organizer</title>
+<style>
+:root{color-scheme:dark;--cyan:#42eaff;--blue:#168bff;--green:#55ffc2;--red:#ff8098;--ink:#eafaff;--muted:#9bb9d4;--panel:#091d33;--line:#42eaff44}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#10345a 0,#071b32 45%,#020711 100%);color:var(--ink);font-family:Arial,sans-serif}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(#42eaff0c 1px,transparent 1px),linear-gradient(90deg,#42eaff0c 1px,transparent 1px);background-size:32px 32px}
+main{position:relative;width:min(100% - 24px,820px);margin:0 auto;padding:22px 0 44px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:10px;font:700 12px Arial,sans-serif;letter-spacing:.12em}
+.mark{width:35px;height:35px;border:1px solid var(--cyan);border-radius:10px;display:grid;place-items:center;color:var(--cyan);font-size:20px;box-shadow:0 0 16px #42eaff44}
+.status{font-size:11px;letter-spacing:.08em;color:var(--green);text-align:right}
+h1,h2,h3{font-family:Arial,sans-serif;margin:0}
+h1{font-size:clamp(24px,5vw,34px);letter-spacing:-.04em}
+h2{font-size:20px}
+.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--cyan);font-weight:700;margin-bottom:8px}
+.muted{color:var(--muted);line-height:1.5}
+.card{background:linear-gradient(145deg,#0a2440f2,#061426f5);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 12px 32px #0003}
+.stack{display:grid;gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+input,textarea,select{width:100%;min-height:46px;padding:12px;border-radius:10px;border:1px solid #347da8;background:#031426;color:var(--ink);font:16px Arial,sans-serif;outline:none}
+textarea{resize:vertical;line-height:1.4}
+input:focus,textarea:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #42eaff22}
+label{display:block;font-size:10px;letter-spacing:.09em;color:#9bc0dc;font-weight:700;margin:4px 0 6px}
+button,.file-button{min-height:46px;border:0;border-radius:10px;padding:12px 15px;font-size:12px;font-weight:800;letter-spacing:.05em;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:linear-gradient(110deg,#c8fcff,#42eaff 52%,#70adff);color:#00101b;box-shadow:0 0 20px #42eaff33}
+.secondary,.file-button{background:#0a2a48;border:1px solid #42eaff77;color:#e5f8ff}
+.danger{background:#421b2c;border:1px solid #ff809877;color:#ffdce4}
+.small{min-height:36px;padding:8px 11px;font-size:10px}
+.hidden{display:none!important}
+.notice{border:1px solid #42eaff44;background:#071b30;border-radius:12px;padding:13px;color:#b9d5e9;font-size:14px;line-height:1.5;margin:12px 0}
+.notice.error{border-color:#ff809877;color:#ffdce4}
+.notice.good{border-color:#55ffc277;color:#baffdf}
+.question-list{display:grid;gap:9px;margin-top:13px}
+.question-item{border:1px solid #2e81ae66;background:#06172b;border-radius:11px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.question-item.selected{border-color:var(--cyan);box-shadow:0 0 14px #42eaff22}
+.question-copy{font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.question-sub{display:block;color:#88afca;font-size:12px;margin-top:5px}
+.actions{display:flex;gap:6px}
+.actions button{min-height:36px;padding:8px 10px;font-size:10px}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-actions{display:flex;gap:9px;margin-top:14px}
+.form-actions button{flex:1}
+.editor-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tools button,.file-button{flex:1;min-width:135px;text-align:center;display:flex;align-items:center;justify-content:center}
+.file-button{cursor:pointer}
+.file-button input{display:none}
+.footer-note{font-size:12px;color:#83a6c3;line-height:1.5;margin-top:15px}
+@media(max-width:520px){
+ main{width:min(100% - 20px,820px);padding-top:14px}
+ .card{padding:14px}
+ header{align-items:flex-start}
+ .question-item{grid-template-columns:1fr}
+ .actions button{flex:1}
+ .option-grid{grid-template-columns:1fr}
+ .form-actions button{padding:12px 8px}
+}
+</style>
+</head>
+<body>
+<main>
+ <header>
+  <div class="brand"><div class="mark">⚡</div><div>IIEE GAME<br><span style="color:#8db6d4;font-size:9px">ORGANIZER PORTAL</span></div></div>
+  <div class="status" id="connectionStatus">CHECKING SETUP…</div>
+ </header>
+
+ <section id="setupNotice" class="card hidden">
+  <div class="eyebrow">ONE-TIME SETUP REQUIRED</div>
+  <h1>Connect your Firebase project</h1>
+  <p class="muted">The organizer portal is ready, but the shared online question database is not configured yet. Follow the setup guide in this repository, then add your Firebase Web App values to <b>firebase-config.js</b>.</p>
+  <a href="https://github.com/chrisgubat1997-cell/IIEE-GAME/blob/main/FIREBASE-SETUP.md" target="_blank" rel="noopener" style="color:#42eaff">Open Firebase setup guide ↗</a>
+ </section>
+
+ <section id="loginPanel" class="card hidden">
+  <div class="eyebrow">AUTHORIZED STAFF ONLY</div>
+  <h1>Organizer sign in</h1>
+  <p class="muted">Sign in using the organizer email and password created in Firebase Authentication. Do not use this page on the public TV.</p>
+  <form id="loginForm" class="stack">
+   <div><label for="loginEmail">ORGANIZER EMAIL</label><input id="loginEmail" type="email" autocomplete="username" required placeholder="name@example.com"></div>
+   <div><label for="loginPassword">PASSWORD</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Password"></div>
+   <button class="primary" id="loginButton" type="submit">SIGN IN</button>
+  </form>
+  <div id="loginMessage" class="notice hidden" role="status"></div>
+ </section>
+
+ <section id="workspace" class="hidden">
+  <div class="card">
+   <div class="editor-head">
+    <div><div class="eyebrow">LIVE QUESTION BANK</div><h1>Manage questions</h1></div>
+    <button class="secondary small" id="signOutButton" type="button">SIGN OUT</button>
+   </div>
+   <p class="muted" id="signedInAs"></p>
+   <div id="syncMessage" class="notice">Waiting for the shared question bank…</div>
+   <div class="tools">
+    <button class="primary" id="addButton" type="button">＋ ADD QUESTION</button>
+    <button class="secondary" id="starterButton" type="button">PUBLISH STARTER 10</button>
+    <button class="secondary" id="exportButton" type="button">EXPORT BACKUP</button>
+    <label class="file-button">IMPORT BACKUP<input id="importFile" type="file" accept=".json,application/json"></label>
+   </div>
+  </div>
+
+  <div class="card">
+   <div class="editor-head"><h2>Question list</h2><span id="questionCount" class="status">0 QUESTIONS</span></div>
+   <div id="questionList" class="question-list"></div>
+  </div>
+
+  <div class="card" id="editorCard">
+   <div class="eyebrow">QUESTION EDITOR</div>
+   <h2 id="editorTitle">Add a question</h2>
+   <form id="questionForm">
+    <div style="margin-top:14px"><label for="questionText">QUESTION</label><textarea id="questionText" rows="3" required placeholder="Type the electrical engineering question"></textarea></div>
+    <div class="option-grid" style="margin-top:12px">
+     <div><label for="optionA">OPTION A</label><input id="optionA" required></div>
+     <div><label for="optionB">OPTION B</label><input id="optionB" required></div>
+     <div><label for="optionC">OPTION C</label><input id="optionC" required></div>
+     <div><label for="optionD">OPTION D</label><input id="optionD" required></div>
+    </div>
+    <div style="margin-top:12px"><label for="correctAnswer">CORRECT ANSWER</label><select id="correctAnswer"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
+    <div style="margin-top:12px"><label for="explanation">EXPLANATION</label><textarea id="explanation" rows="2" placeholder="Why is this answer correct?"></textarea></div>
+    <div class="form-actions"><button class="secondary" id="clearButton" type="button">CLEAR</button><button class="primary" id="saveButton" type="submit">SAVE TO ALL KIOSKS</button></div>
+    <div id="editorMessage" class="notice hidden" role="status"></div>
+   </form>
+  </div>
+  <p class="footer-note">Changes are published to the shared Firebase question bank. Connected TVs receive the new questions automatically. Avoid editing the same question at the same time on multiple organizer devices.</p>
+ </section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import {
+ getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { getDatabase,ref,onValue,set } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
+
+const $=id=>document.getElementById(id);
+const DEFAULT_QUESTIONS=[
+ {q:"What is the SI unit of electrical resistance?",a:["Volt","Ohm","Ampere","Watt"],c:1,e:"Electrical resistance is measured in ohms (Ω)."},
+ {q:"Which law states that voltage equals current multiplied by resistance?",a:["Faraday's Law","Kirchhoff's Current Law","Ohm's Law","Lenz's Law"],c:2,e:"Ohm's Law is V = I × R."},
+ {q:"In a purely resistive AC circuit, voltage and current are…",a:["90° out of phase","In phase","180° out of phase","Always unequal in frequency"],c:1,e:"A pure resistor does not shift the phase: voltage and current are in phase."},
+ {q:"What is the standard nominal frequency of the Philippine power system?",a:["50 Hz","60 Hz","25 Hz","100 Hz"],c:1,e:"The nominal frequency of the Philippine power system is 60 Hz."},
+ {q:"Which instrument is connected in parallel to measure voltage?",a:["Ammeter","Wattmeter current coil","Voltmeter","Ohmmeter only"],c:2,e:"A voltmeter is connected in parallel across the component."},
+ {q:"What happens to total resistance when resistors are connected in series?",a:["It is the sum of the resistances","It becomes the smallest resistance","It is always zero","It is the reciprocal sum"],c:0,e:"For series resistors, total resistance is R₁ + R₂ + …"},
+ {q:"Which device protects a circuit by interrupting excessive current?",a:["Capacitor","Fuse","Transformer","Inductor"],c:1,e:"A fuse opens the circuit when current exceeds its rated limit."},
+ {q:"What is the unit of electrical power?",a:["Joule","Coulomb","Watt","Tesla"],c:2,e:"Electrical power is measured in watts (W)."},
+ {q:"A transformer operates on the principle of…",a:["Electromagnetic induction","Electrostatic attraction","Chemical reaction","Thermal expansion"],c:0,e:"A changing magnetic flux induces voltage in the transformer windings."},
+ {q:"In a balanced three-phase system, the phase voltages are separated by…",a:["60 electrical degrees","90 electrical degrees","120 electrical degrees","180 electrical degrees"],c:2,e:"The three phase quantities are spaced 120 electrical degrees apart."}
+];
+let auth=null,db=null,questions=[],editingIndex=-1,unsubscribeQuestions=null,cloudHasBank=false;
+function setStatus(text){$("connectionStatus").textContent=text;}
+function message(id,text,type){const el=$(id);el.textContent=text;el.className="notice"+(type?" "+type:"");el.classList.remove("hidden");}
+function validBank(bank){
+ return Array.isArray(bank)&&bank.length>0&&bank.every(item=>
+  item&&typeof item.q==="string"&&item.q.trim()&&Array.isArray(item.a)&&item.a.length===4&&
+  item.a.every(x=>typeof x==="string"&&x.trim())&&Number.isInteger(Number(item.c))&&Number(item.c)>=0&&Number(item.c)<=3
+ );
+}
+function escapeHtml(value){
+ return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function renderQuestions(){
+ $("questionCount").textContent=questions.length+" QUESTIONS";
+ $("questionList").innerHTML="";
+ if(!questions.length){
+  $("questionList").innerHTML='<div class="notice">No question bank has been published yet. Click <b>PUBLISH STARTER 10</b> or add your own first question.</div>';
+  return;
+ }
+ questions.forEach((item,index)=>{
+  const row=document.createElement("div");
+  row.className="question-item"+(editingIndex===index?" selected":"");
+  const copy=document.createElement("div");
+  copy.className="question-copy";
+  const answerIndex=Number(item.c);
+  copy.innerHTML="<b>"+(index+1)+".</b> "+escapeHtml(item.q)+
+   '<span class="question-sub">Correct: '+String.fromCharCode(65+answerIndex)+" — "+escapeHtml(item.a[answerIndex])+"</span>";
+  const actions=document.createElement("div");actions.className="actions";
+  const edit=document.createElement("button");edit.className="secondary";edit.textContent="EDIT";edit.type="button";
+  edit.addEventListener("click",()=>editQuestion(index));
+  const del=document.createElement("button");del.className="danger";del.textContent="DELETE";del.type="button";
+  del.addEventListener("click",()=>deleteQuestion(index));
+  actions.append(edit,del);row.append(copy,actions);$("questionList").append(row);
+ });
+}
+function clearEditor(){
+ editingIndex=-1;$("editorTitle").textContent="Add a question";$("questionForm").reset();
+ $("editorMessage").classList.add("hidden");renderQuestions();
+}
+function editQuestion(index){
+ const q=questions[index];if(!q)return;editingIndex=index;
+ $("editorTitle").textContent="Edit question "+(index+1);
+ $("questionText").value=q.q;
+ q.a.forEach((v,i)=>$("option"+String.fromCharCode(65+i)).value=v);
+ $("correctAnswer").value=String(q.c);$("explanation").value=q.e||"";
+ renderQuestions();$("editorCard").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function collectQuestion(){
+ const item={
+  q:$("questionText").value.trim(),
+  a:["A","B","C","D"].map(letter=>$("option"+letter).value.trim()),
+  c:Number($("correctAnswer").value),
+  e:$("explanation").value.trim()
+ };
+ if(!item.q||item.a.some(x=>!x))throw new Error("Fill in the question and all four answer choices.");
+ if(new Set(item.a.map(x=>x.toLowerCase())).size!==4)throw new Error("The four answer choices must be different.");
+ return item;
+}
+async function publishBank(nextBank,successText){
+ if(!validBank(nextBank))throw new Error("The question bank must contain at least one complete question.");
+ $("saveButton").disabled=true;
+ try{
+  await set(ref(db,"iieeGame/questions"),nextBank);
+  questions=nextBank;cloudHasBank=true;renderQuestions();message("syncMessage",successText||"Saved to the cloud. Connected game screens will update automatically.","good");
+ }finally{$("saveButton").disabled=false;}
+}
+$("questionForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ try{
+  const item=collectQuestion();const next=questions.slice();
+  if(editingIndex<0)next.push(item);else next[editingIndex]=item;
+  await publishBank(next,"Question saved to the shared cloud bank. The TV will receive it automatically.");
+  editingIndex=next.length-1;$("editorTitle").textContent="Saved question "+(editingIndex+1);
+  $("editorMessage").classList.remove("hidden");message("editorMessage","Saved successfully. The next player can receive this question.","good");
+ }catch(error){message("editorMessage",error.message||"Could not save the question.","error");}
+});
+$("addButton").addEventListener("click",()=>{clearEditor();$("editorCard").scrollIntoView({behavior:"smooth",block:"start"});});
+$("clearButton").addEventListener("click",clearEditor);
+async function deleteQuestion(index){
+ if(questions.length<=1){message("syncMessage","At least one question must remain.","error");return;}
+ if(!confirm("Delete question "+(index+1)+" from all connected game screens?"))return;
+ const next=questions.slice();next.splice(index,1);
+ try{await publishBank(next,"Question deleted from the shared question bank.");clearEditor();}
+ catch(error){message("syncMessage",error.message||"Delete failed. Check your database permissions.","error");}
+}
+$("starterButton").addEventListener("click",async()=>{
+ if(cloudHasBank&&!confirm("Replace the current shared question bank with the original 10 starter questions?"))return;
+ try{await publishBank(DEFAULT_QUESTIONS.map(q=>({...q,a:q.a.slice()})),"Starter questions published to the cloud.");clearEditor();}
+ catch(error){message("syncMessage",error.message||"Could not publish starter questions.","error");}
+});
+$("exportButton").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify(questions,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);const a=document.createElement("a");
+ a.href=url;a.download="iiee-game-questions-backup.json";document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+});
+$("importFile").addEventListener("change",event=>{
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=async()=>{
+  try{
+   const parsed=JSON.parse(String(reader.result));
+   if(!validBank(parsed))throw new Error("Invalid backup. Each question needs 4 choices and a correct answer.");
+   if(!confirm("Import "+parsed.length+" questions and replace the shared question bank for all kiosks?"))return;
+   const normalized=parsed.map(item=>({q:item.q.trim(),a:item.a.map(x=>x.trim()),c:Number(item.c),e:typeof item.e==="string"?item.e:""}));
+   await publishBank(normalized,"Backup imported and published to all connected kiosks.");clearEditor();
+  }catch(error){message("syncMessage",error.message||"Could not import the selected file.","error");}
+  finally{$("importFile").value="";}
+ };
+ reader.onerror=()=>message("syncMessage","Could not read the selected file.","error");
+ reader.readAsText(file);
+});
+$("loginForm").addEventListener("submit",async event=>{
+ event.preventDefault();$("loginButton").disabled=true;
+ $("loginMessage").classList.add("hidden");
+ try{
+  await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);
+ }catch(error){
+  message("loginMessage",friendlyAuthError(error),"error");
+ }finally{$("loginButton").disabled=false;}
+});
+$("signOutButton").addEventListener("click",async()=>{if(unsubscribeQuestions){unsubscribeQuestions();unsubscribeQuestions=null;}await signOut(auth);});
+function friendlyAuthError(error){
+ const code=error&&error.code;
+ if(code==="auth/invalid-credential"||code==="auth/wrong-password"||code==="auth/user-not-found")return "Email or password is incorrect.";
+ if(code==="auth/too-many-requests")return "Too many attempts. Try again later.";
+ if(code==="auth/network-request-failed")return "Network error. Check your internet connection.";
+ return (error&&error.message)||"Sign-in failed. Check the Firebase setup.";
+}
+if(!isFirebaseConfigured){
+ setStatus("SETUP REQUIRED");$("setupNotice").classList.remove("hidden");
+ $("loginPanel").classList.add("hidden");
+}else{
+ try{
+  const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);
+  setStatus("FIREBASE READY");
+  onAuthStateChanged(auth,user=>{
+   if(unsubscribeQuestions){unsubscribeQuestions();unsubscribeQuestions=null;}
+   if(!user){
+    $("loginPanel").classList.remove("hidden");$("workspace").classList.add("hidden");setStatus("SIGN IN REQUIRED");return;
+   }
+   $("loginPanel").classList.add("hidden");$("workspace").classList.remove("hidden");
+   $("signedInAs").textContent="Signed in as "+(user.email||"authorized organizer")+".";
+   setStatus("CONNECTED");
+   const questionsRef=ref(db,"iieeGame/questions");
+   unsubscribeQuestions=onValue(questionsRef,snapshot=>{
+    const data=snapshot.val();
+    if(data&&validBank(data)){questions=data;cloudHasBank=true;message("syncMessage","LIVE — question bank synchronized. TV screens receive updates automatically.","good");}
+    else{questions=[];cloudHasBank=false;message("syncMessage","Cloud database is ready but has no questions yet. Publish the starter bank or add a question.","");}
+    renderQuestions();
+   },error=>{
+    setStatus("DATABASE ERROR");message("syncMessage","Could not read the database. Check the Realtime Database rules. "+error.message,"error");
+   });
+  });
+ }catch(error){
+  setStatus("CONFIG ERROR");$("setupNotice").classList.remove("hidden");
+  message("setupNotice",error.message||"Firebase could not initialize.","error");
+ }
+}
+</script>
+</body>
+</html>
