@@ -448,10 +448,11 @@ function saveEditedQuestion(){
   $('editorMessage').textContent='Each answer choice should be different.';return;
  }
  const item={q:question,a:answers,c:correct,e:explanation};
+ const savedIndex=editingQuestionIndex<0?QUESTIONS.length:editingQuestionIndex;
  if(editingQuestionIndex<0)QUESTIONS.push(item);
  else QUESTIONS[editingQuestionIndex]=item;
  if(!persistQuestionBank())return;
- editingQuestionIndex=QUESTIONS.length-1;
+ editingQuestionIndex=savedIndex;
  $('editorTitle').textContent='SAVED QUESTION '+(editingQuestionIndex+1);
  $('editorMessage').textContent='Saved! This question can appear in the next play.';
  renderQuestionList();
