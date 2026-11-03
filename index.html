@@ -1,1 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#030b18">
+<title>IIEE Power Challenge</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap');
+:root{--cyan:#42eaff;--blue:#168bff;--violet:#9b6bff;--ink:#eafaff;--muted:#9bb9d4;--panel:rgba(5,23,45,.88);--green:#55ffc2;--red:#ff6685}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020814;color:var(--ink);font-family:Rajdhani,Arial,sans-serif;touch-action:manipulation}
+body{background:radial-gradient(ellipse at 50% 35%,#10345a 0,#071b32 43%,#020711 100%);position:relative}
+body:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#42eaff12 1px,transparent 1px),linear-gradient(90deg,#42eaff12 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(#000,transparent 90%)}
+body:after{content:"";position:absolute;inset:-60%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 38%,#42eaff0b 45%,transparent 52% 100%);animation:rotate 24s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.045);filter:brightness(1.35)}}@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#app{position:relative;z-index:1;width:min(100%,650px);height:100dvh;margin:auto;padding:clamp(13px,3vw,26px);display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.top{width:100%;display:flex;align-items:center;justify-content:space-between;font:600 clamp(9px,2.2vw,13px) Orbitron,Arial;letter-spacing:.13em;color:#9cc8e6}
+.brand{display:flex;align-items:center;gap:9px}.mark{width:27px;height:27px;border:1px solid var(--cyan);border-radius:8px;display:grid;place-items:center;color:var(--cyan);box-shadow:0 0 16px #42eaff55}
+.screen{width:100%;flex:1;min-height:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(12px,2.3vh,22px);animation:fade .35s ease}
+.screen.active{display:flex}
+.eyebrow{font:600 clamp(10px,2.4vw,14px) Orbitron,Arial;letter-spacing:.25em;color:var(--cyan)}
+h1{font:800 clamp(31px,8vw,62px)/1.05 Orbitron,Arial;letter-spacing:-.04em;margin:0;text-shadow:0 0 28px #168bff99}
+h1 span{display:block;color:var(--cyan)}h2{font:700 clamp(21px,5.5vw,34px) Orbitron,Arial;margin:0}
+.sub{font-size:clamp(17px,4vw,23px);line-height:1.2;color:#b7cce0;max-width:34ch}
+.reactor-wrap{width:min(58vw,285px);aspect-ratio:1;position:relative;display:grid;place-items:center;margin:2px}
+.reactor{width:68%;height:68%;border-radius:50%;background:radial-gradient(circle,#eaffff 0 2%,#58edff 5%,#087dca 18%,#09294d 48%,#020d1b 72%);box-shadow:0 0 25px #42eaff,0 0 75px #168bff99,inset 0 0 28px #42eaff99;animation:pulse 2s ease-in-out infinite;display:grid;place-items:center}
+.reactor:before,.reactor:after{content:"";position:absolute;inset:9%;border:2px solid #42eaff99;border-left-color:transparent;border-right-color:transparent;border-radius:50%;animation:rotate 7s linear infinite}
+.reactor:after{inset:0;border-color:#9b6bff88;border-top-color:transparent;border-bottom-color:transparent;animation-direction:reverse;animation-duration:11s}
+.core{width:25%;height:25%;border-radius:50%;background:white;box-shadow:0 0 22px 10px #42eaff,0 0 65px 25px #168bff}
+button{font:700 clamp(14px,3.4vw,18px) Orbitron,Arial;letter-spacing:.06em;border:0;border-radius:13px;padding:16px 19px;min-height:58px;cursor:pointer;touch-action:manipulation}
+.primary{width:min(100%,430px);color:#00101b;background:linear-gradient(110deg,#c8fcff,#42eaff 52%,#70adff);box-shadow:0 0 24px #42eaff66,inset 0 1px white}
+.secondary{background:#0a2340;color:#dffaff;border:1px solid #42eaff77}
+button:active{transform:scale(.975);filter:brightness(1.15)}
+.hud{width:100%;display:flex;gap:9px}.hudbox{flex:1;min-width:0;text-align:left;padding:9px 11px;border:1px solid #42eaff44;background:#06182dcc;border-radius:11px}
+.hudlabel{font:600 9px Orbitron,Arial;letter-spacing:.12em;color:#86afd0}.hudvalue{font:700 clamp(17px,4vw,23px) Orbitron,Arial;color:var(--cyan);margin-top:4px}
+.progress{height:5px;width:100%;border-radius:9px;background:#173452;overflow:hidden}.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px var(--cyan);transition:width .3s}
+.qmeta{width:100%;display:flex;justify-content:space-between;font:600 10px Orbitron,Arial;color:#8db7d7;letter-spacing:.12em}
+.question{font:700 clamp(20px,5.1vw,31px)/1.2 Rajdhani,Arial;max-width:32ch}
+.answers{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{min-height:clamp(76px,12vh,108px);padding:12px 10px;text-align:left;background:linear-gradient(145deg,#0c2b4b,#06172c);border:1px solid #2e81ae88;color:#e8f9ff;box-shadow:inset 0 1px #ffffff0b;font:600 clamp(16px,3.6vw,21px) Rajdhani,Arial;letter-spacing:0}
+.answer .letter{display:block;font:700 11px Orbitron,Arial;color:var(--cyan);margin-bottom:6px}
+.answer.correct{border:2px solid var(--green);background:#064333;color:white;box-shadow:0 0 20px #55ffc255}
+.answer.wrong{border:2px solid var(--red);background:#45182b}
+.answer:disabled{opacity:1;cursor:default}
+.feedback{min-height:48px;width:100%;font-size:clamp(15px,3.5vw,19px);color:#bdd4e8;line-height:1.2}
+.feedback.good{color:var(--green)}.feedback.bad{color:#ff9bb0}
+.timerbar{width:100%;height:6px;background:#203c58;border-radius:10px;overflow:hidden}.timerbar div{height:100%;width:100%;background:var(--cyan);will-change:width}
+.timerbar.urgent div{background:var(--red)}
+.result-score{font:800 clamp(58px,16vw,100px)/1 Orbitron,Arial;color:var(--cyan);text-shadow:0 0 30px #42eaff88}
+.stats{width:100%;display:flex;gap:10px}.stat{flex:1;padding:13px 8px;border:1px solid #42eaff44;background:#06182dcc;border-radius:12px}.stat strong{display:block;font:700 25px Orbitron,Arial;color:var(--cyan)}.stat span{font:600 10px Orbitron,Arial;color:#91b4d0;letter-spacing:.1em}
+.nameinput{width:min(100%,420px);padding:16px;border:1px solid #42eaff88;border-radius:12px;background:#06182d;color:white;text-align:center;font:600 20px Rajdhani,Arial;outline:none}
+.nameinput:focus{box-shadow:0 0 18px #42eaff44}
+.footer{font:500 9px Orbitron,Arial;color:#587b9d;letter-spacing:.18em;text-align:center}
+.hidden{display:none!important}
+@media(max-height:700px){#app{padding:10px 14px}.screen{gap:9px}.reactor-wrap{width:min(43vw,210px)}.answer{min-height:65px}.hudbox{padding:6px 9px}}
+@media(max-width:390px){.answers{gap:7px}.answer{padding:9px 8px}.hud{gap:6px}}
 
+/* One-question result animations */
+.fx-screen{gap:clamp(14px,3vh,26px)}
+.fx-orb{width:min(48vw,230px);aspect-ratio:1;position:relative;display:grid;place-items:center;border-radius:50%;font-size:clamp(76px,18vw,112px);isolation:isolate}
+.fx-orb:before,.fx-orb:after{content:"";position:absolute;inset:3%;border:3px solid currentColor;border-radius:50%;opacity:.8;animation:fxRing 1.15s ease-out infinite}
+.fx-orb:after{inset:-12%;animation-delay:.22s}
+.fx-screen.win .fx-orb{color:var(--green);background:radial-gradient(circle,#55ffc244,#55ffc20a 64%,transparent 70%);text-shadow:0 0 30px #55ffc2,0 0 70px #55ffc2;animation:winPop .75s cubic-bezier(.16,1.4,.4,1) both}
+.fx-screen.lose .fx-orb{color:var(--red);background:radial-gradient(circle,#ff668544,#ff66850a 64%,transparent 70%);text-shadow:0 0 28px #ff6685,0 0 65px #ff6685;animation:loseShake .65s ease both}
+.fx-screen.win h1{color:var(--green);text-shadow:0 0 28px #55ffc2aa}
+.fx-screen.lose h1{color:var(--red);text-shadow:0 0 28px #ff6685aa}
+.fx-screen.win .eyebrow{color:var(--green)}.fx-screen.lose .eyebrow{color:#ff9bb0}
+@keyframes fxRing{0%{transform:scale(.72);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+@keyframes winPop{0%{transform:scale(.25) rotate(-24deg);filter:brightness(2)}70%{transform:scale(1.13) rotate(5deg)}100%{transform:scale(1) rotate(0);filter:brightness(1)}}
+@keyframes loseShake{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-10px)}30%,60%,90%{transform:translateX(10px)}50%{filter:brightness(1.7)}}
+.prize-list{width:100%;display:grid;grid-template-columns:1fr;gap:12px}
+.prize-btn{width:100%;min-height:72px;display:flex;align-items:center;justify-content:center;gap:13px;color:#eafaff;background:linear-gradient(110deg,#0c2e50,#09203a);border:1px solid #42eaff99;box-shadow:0 0 18px #168bff22,inset 0 1px #ffffff12}
+.prize-btn .gift{font-size:27px;filter:drop-shadow(0 0 8px #42eaff99)}
+.prize-btn:active{background:linear-gradient(110deg,#15517a,#0b3153)}
+.prize-confirm{width:100%;padding:22px 16px;border:1px solid #55ffc288;border-radius:16px;background:linear-gradient(145deg,#073d36dd,#06182ddd);box-shadow:0 0 30px #55ffc222;animation:fade .4s ease}
+.prize-confirm .gift-big{font-size:68px;filter:drop-shadow(0 0 18px #55ffc2)}
+.prize-confirm h2{color:var(--green);margin:8px 0}
+.wrong-note{max-width:30ch;color:#ffb0c0;font-size:clamp(17px,4vw,22px);line-height:1.25}
+#quiz.shake{animation:loseShake .45s ease}
+@media(min-height:760px){.prize-list{gap:16px}.prize-btn{min-height:82px}}
+.auto-reset{margin:18px auto 0;color:#8cb9d6;font-size:12px;letter-spacing:1.2px;line-height:1.6;text-align:center;text-transform:uppercase;animation:pulse 1.8s ease-in-out infinite}
+
+
+</style>
+</head>
+<body>
+<div id="app">
+ <header class="top"><div class="brand"><div class="mark">⚡</div><span>IIEE POWER CHALLENGE</span></div><span>TOUCH KIOSK</span></header>
+ <main id="intro" class="screen active">
+  <div class="eyebrow">ELECTRICAL ENGINEERING QUIZ</div>
+  <div class="reactor-wrap"><div class="reactor"><div class="core"></div></div></div>
+  <h1>POWER <span>UP!</span></h1>
+  <p class="sub">Test your electrical engineering knowledge. Are you ready to energize your mind?</p>
+  <button class="primary" onclick="startGame()">TOUCH TO ACTIVATE&nbsp; ⚡</button>
+  <div class="footer">THINK FAST • STAY SHARP • POWER SAFE</div>
+ </main>
+ <main id="quiz" class="screen">
+  <div class="hud">
+   <div class="hudbox"><div class="hudlabel">POWER CHALLENGE</div><div class="hudvalue">ONE SHOT</div></div>
+   <div class="hudbox"><div class="hudlabel">TIME LEFT</div><div class="hudvalue" id="time">15</div></div>
+  </div>
+  <div class="timerbar" id="timerbar"><div id="timerfill"></div></div>
+  <div class="qmeta"><span>ONE QUESTION ONLY</span><span>+100 PTS</span></div>
+  <h2 class="question" id="question"></h2>
+  <div class="answers" id="answers"></div>
+  <div class="feedback" id="feedback" aria-live="polite">Choose the best answer.</div>
+ </main>
+ <main id="feedbackScreen" class="screen fx-screen">
+  <div class="eyebrow" id="fxEyebrow">RESULT</div>
+  <div class="fx-orb" id="fxOrb" aria-hidden="true">⚡</div>
+  <h1 id="fxTitle">CORRECT!</h1>
+  <p class="sub" id="fxText"></p>
+ </main>
+ <main id="prizes" class="screen">
+  <div class="eyebrow">POWER REWARD UNLOCKED</div>
+  <h2>CHOOSE YOUR PRIZE</h2>
+  <p class="sub">Pick one Gemcor giveaway item.</p>
+  <div class="prize-list" id="prizeList">
+   <button class="prize-btn" onclick="choosePrize('GEMCOR MUG','☕')"><span class="gift">☕</span> GEMCOR MUG</button>
+   <button class="prize-btn" onclick="choosePrize('GEMCOR SHIRT','👕')"><span class="gift">👕</span> GEMCOR SHIRT</button>
+   <button class="prize-btn" onclick="choosePrize('GEMCOR TOTE BAG','👜')"><span class="gift">👜</span> GEMCOR TOTE BAG</button>
+  </div>
+  <div id="prizeConfirm" class="prize-confirm hidden" aria-live="polite">
+   <div id="prizeEmoji" class="gift-big">🎁</div>
+   <h2 id="prizeName">GEMCOR MUG</h2>
+   <p class="sub">Show this screen to the event staff to claim your prize.</p>
+  </div>
+  <p id="prizeAutoReset" class="auto-reset hidden">Returning to start automatically…</p>
+ </main>
+ <main id="wrongScreen" class="screen fx-screen lose">
+  <div class="eyebrow">CHALLENGE RESULT</div>
+  <div class="fx-orb" aria-hidden="true">✕</div>
+  <h1>NOT QUITE!</h1>
+  <p class="wrong-note" id="wrongMessage">That's okay. Give it another shot!</p>
+  <p class="auto-reset">The next player can start shortly. Returning to the start screen automatically…</p>
+ </main>
+<footer class="footer">IIEE • ELECTRICAL ENGINEERING KNOWLEDGE</footer>
+</div>
+<script>
+const QUESTIONS=[
+ {q:"What is the SI unit of electrical resistance?",a:["Volt","Ohm","Ampere","Watt"],c:1,e:"Electrical resistance is measured in ohms (Ω)."},
+ {q:"Which law states that voltage equals current multiplied by resistance?",a:["Faraday's Law","Kirchhoff's Current Law","Ohm's Law","Lenz's Law"],c:2,e:"Ohm's Law is V = I × R."},
+ {q:"In a purely resistive AC circuit, voltage and current are…",a:["90° out of phase","In phase","180° out of phase","Always unequal in frequency"],c:1,e:"A pure resistor does not shift the phase: voltage and current are in phase."},
+ {q:"What is the standard nominal frequency of the Philippine power system?",a:["50 Hz","60 Hz","25 Hz","100 Hz"],c:1,e:"The nominal frequency of the Philippine power system is 60 Hz."},
+ {q:"Which instrument is connected in parallel to measure voltage?",a:["Ammeter","Wattmeter current coil","Voltmeter","Ohmmeter only"],c:2,e:"A voltmeter is connected in parallel across the component."},
+ {q:"What happens to total resistance when resistors are connected in series?",a:["It is the sum of the resistances","It becomes the smallest resistance","It is always zero","It is the reciprocal sum"],c:0,e:"For series resistors, total resistance is R₁ + R₂ + …"},
+ {q:"Which device protects a circuit by interrupting excessive current?",a:["Capacitor","Fuse","Transformer","Inductor"],c:1,e:"A fuse opens the circuit when current exceeds its rated limit."},
+ {q:"What is the unit of electrical power?",a:["Joule","Coulomb","Watt","Tesla"],c:2,e:"Electrical power is measured in watts (W)."},
+ {q:"A transformer operates on the principle of…",a:["Electromagnetic induction","Electrostatic attraction","Chemical reaction","Thermal expansion"],c:0,e:"A changing magnetic flux induces voltage in the transformer windings."},
+ {q:"In a balanced three-phase system, the phase voltages are separated by…",a:["60 electrical degrees","90 electrical degrees","120 electrical degrees","180 electrical degrees"],c:2,e:"The three phase quantities are spaced 120 electrical degrees apart."}
+];
+const ROUND_DURATION=15000;
+const WRONG_RESET_DELAY=5000;
+const PRIZE_CONFIRM_RESET_DELAY=6500;
+const PRIZE_SELECTION_RESET_DELAY=20000;
+let timerRaf=null,roundStartedAt=0,transitionTimer=null,locked=false,currentQuestion=null;
+const $=id=>document.getElementById(id);
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
+function resetToIntro(){
+ if(timerRaf!==null){cancelAnimationFrame(timerRaf);timerRaf=null;}
+ clearTimeout(transitionTimer);transitionTimer=null;locked=false;currentQuestion=null;
+ go('intro');
+}
+function startGame(){
+ if(timerRaf!==null)cancelAnimationFrame(timerRaf);clearTimeout(transitionTimer);transitionTimer=null;locked=false;
+ const source=QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
+ const options=source.a.map((text,i)=>({text,correct:i===source.c}));
+ for(let i=options.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[options[i],options[j]]=[options[j],options[i]]}
+ currentQuestion={q:source.q,a:options,c:options.findIndex(x=>x.correct),e:source.e};
+ renderQuestion();go('quiz');
+}
+function renderQuestion(){
+ $('time').textContent='15';$('question').textContent=currentQuestion.q;
+ $('feedback').textContent='Choose the best answer.';$('feedback').className='feedback';
+ $('timerbar').classList.remove('urgent');$('timerfill').style.width='100%';$('answers').innerHTML='';
+ currentQuestion.a.forEach((answer,i)=>{
+  const b=document.createElement('button');b.className='answer';
+  const letter=document.createElement('span');letter.className='letter';letter.textContent=String.fromCharCode(65+i);
+  b.append(letter,document.createTextNode(answer.text));b.onclick=()=>choose(i);$('answers').appendChild(b);
+ });
+ roundStartedAt=performance.now();
+ const animateTimer=now=>{
+  if(locked)return;
+  const elapsed=now-roundStartedAt;
+  const remaining=Math.max(0,ROUND_DURATION-elapsed);
+  const fraction=remaining/ROUND_DURATION;
+  $('timerfill').style.width=`${fraction*100}%`;
+  $('time').textContent=String(Math.ceil(remaining/1000));
+  if(remaining<=5000)$('timerbar').classList.add('urgent');
+  if(remaining<=0){choose(-1);return;}
+  timerRaf=requestAnimationFrame(animateTimer);
+ };
+ timerRaf=requestAnimationFrame(animateTimer);
+}
+function choose(choice){
+ if(locked)return;locked=true;if(timerRaf!==null){cancelAnimationFrame(timerRaf);timerRaf=null;}
+ const correct=choice===currentQuestion.c;
+ [...$('answers').children].forEach((b,i)=>{b.disabled=true;if(i===currentQuestion.c)b.classList.add('correct');else if(i===choice)b.classList.add('wrong')});
+ if(correct){
+  $('feedback').textContent='⚡ Correct answer!';$('feedback').className='feedback good';
+  $('fxEyebrow').textContent='ACCESS GRANTED';$('fxTitle').textContent='CORRECT!';$('fxText').textContent=currentQuestion.e;
+  $('feedbackScreen').className='screen fx-screen win';$('fxOrb').textContent='✓';go('feedbackScreen');
+  transitionTimer=setTimeout(()=>{
+   transitionTimer=null;
+   go('prizes');
+   $('prizeList').classList.remove('hidden');
+   $('prizeConfirm').classList.add('hidden');
+   $('prizeAutoReset').classList.add('hidden');
+   // Return to the attract screen if the player walks away without choosing a prize.
+   transitionTimer=setTimeout(resetToIntro,PRIZE_SELECTION_RESET_DELAY);
+  },1550);
+ }else{
+  $('wrongMessage').textContent=(choice===-1?"Time's up! ":"Not quite! ")+currentQuestion.e;
+  go('wrongScreen');
+  transitionTimer=setTimeout(resetToIntro,WRONG_RESET_DELAY);
+ }
+}
+function choosePrize(name,emoji){
+ clearTimeout(transitionTimer);transitionTimer=null;
+ $('prizeName').textContent=name;$('prizeEmoji').textContent=emoji;
+ $('prizeList').classList.add('hidden');$('prizeConfirm').classList.remove('hidden');
+ $('prizeAutoReset').classList.remove('hidden');
+ transitionTimer=setTimeout(resetToIntro,PRIZE_CONFIRM_RESET_DELAY);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')resetToIntro()});
+</script>
+</body></html>
