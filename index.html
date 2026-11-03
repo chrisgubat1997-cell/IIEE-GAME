@@ -338,6 +338,15 @@ button:active{transform:translateY(2px);filter:none}
 .extra-count button{min-width:62px;background:#f2b84b;color:#123b5d;border:2px solid #123b5d;font-size:25px}
 .extra-count strong{font-size:20px;color:#123b5d}
 @media(max-width:520px){.extra-memory{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* FULLY SCROLLABLE GAME COLLECTION */
+#modeSelect{justify-content:flex-start;align-items:stretch;overflow-y:auto;overflow-x:hidden;min-height:0;padding:10px 4px 22px;gap:12px;touch-action:pan-y}
+#modeSelect .eyebrow,#modeSelect h2,#modeSelect>.sub,#modeSelect>.secondary{align-self:center;text-align:center;flex:none}
+#modeSelect .game-menu-grid{max-height:none;min-height:0;overflow:visible;flex:none;gap:10px}
+#modeSelect .mode-card{flex:none;min-height:88px}
+#modeSelect .game-section-label{flex:none;margin-top:4px}
+#modeSelect>.secondary{width:min(100%,430px);margin:8px auto 0}
+@media(max-width:520px){#modeSelect .game-menu-grid{max-height:none;overflow:visible}#modeSelect .mode-card{min-height:78px;padding:12px}}
 </style>
 </head>
 <body>
@@ -376,14 +385,14 @@ button:active{transform:translateY(2px);filter:none}
    <button class="mode-card" onclick="startMiniGame('calculation')"><span class="mode-icon">∑</span><span class="mode-copy"><strong>POWER CALCULATION</strong><small>Solve quick voltage, current, resistance and power problems.</small></span><span class="game-arrow">›</span></button>
    <button class="mode-card" onclick="startMiniGame('reaction')"><span class="mode-icon">◉</span><span class="mode-copy"><strong>REACTION CHALLENGE</strong><small>Test your focus and reaction speed.</small></span><span class="game-arrow">›</span></button>
    <button class="mode-card" onclick="startMiniGame('lucky')"><span class="mode-icon">✳</span><span class="mode-copy"><strong>LUCKY SPIN</strong><small>A quick random challenge or prize round.</small></span><span class="game-arrow">›</span></button>
-  </div>
-
-   <div class="game-section-label">SOLO GAMES</div>
+<div class="game-section-label">SOLO GAMES</div>
    <button class="mode-card" onclick="startMemoryMatch()"><span class="mode-icon">▦</span><span class="mode-copy"><strong>MEMORY MATCH</strong><small>Match electrical symbols with their names.</small></span><span class="game-arrow">›</span></button>
    <button class="mode-card" onclick="startOhmSprint()"><span class="mode-icon">Ω</span><span class="mode-copy"><strong>OHM'S LAW SPRINT</strong><small>Solve quick electrical calculations.</small></span><span class="game-arrow">›</span></button>
    <div class="game-section-label">COOPERATIVE TEAM GAMES</div>
    <button class="mode-card" onclick="startCoopGame('relay')"><span class="mode-icon">↗</span><span class="mode-copy"><strong>TEAM POWER RELAY</strong><small>Take turns answering and build one shared score.</small></span><span class="game-arrow">›</span></button>
    <button class="mode-card" onclick="startCoopGame('safety')"><span class="mode-icon">✓</span><span class="mode-copy"><strong>TEAM SAFETY RELAY</strong><small>Work together through electrical safety scenarios.</small></span><span class="game-arrow">›</span></button>
+  </div>
+
   <button class="secondary" onclick="resetToIntro()">BACK</button>
  </main>
  <main id="circuitGame" class="circuit-screen">
