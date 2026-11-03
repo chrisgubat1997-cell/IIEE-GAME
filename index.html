@@ -326,6 +326,18 @@ button:active{transform:translateY(2px);filter:none}
 .team-score-total small{display:block;font-size:16px;margin-top:8px;color:var(--muted)}
 @media(max-height:700px){.circuit-setup{gap:8px}.team-instruction{padding:9px;gap:4px}.team-count-btn{min-height:44px}}
 
+/* Extra solo and cooperative game styles */
+.game-section-label{grid-column:1/-1;text-align:left;color:#167c80;font-weight:900;letter-spacing:.08em;padding:8px 2px 2px;border-bottom:2px solid #d8e1df}
+.extra-memory{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%;max-width:700px;margin:10px auto}
+.extra-tile{min-height:clamp(76px,13vw,125px);background:#fffdf8;color:#123b5d;border:3px solid #123b5d;border-radius:14px;font-size:clamp(17px,3.5vw,25px);font-weight:900;box-shadow:0 4px 0 #d8d2c4}
+.extra-tile:disabled{background:#dce9e3;color:#167c80;opacity:1}
+.extra-stats{text-align:center;font-weight:900;color:#167c80}
+.extra-rules{background:#fffdf8;border:2px solid #d8e1df;border-radius:14px;padding:14px;text-align:left;color:#123b5d;width:100%;font-size:17px}
+.extra-rules p{margin:6px 0}
+.extra-count{display:flex;align-items:center;justify-content:center;gap:22px;margin:10px}
+.extra-count button{min-width:62px;background:#f2b84b;color:#123b5d;border:2px solid #123b5d;font-size:25px}
+.extra-count strong{font-size:20px;color:#123b5d}
+@media(max-width:520px){.extra-memory{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -365,6 +377,13 @@ button:active{transform:translateY(2px);filter:none}
    <button class="mode-card" onclick="startMiniGame('reaction')"><span class="mode-icon">◉</span><span class="mode-copy"><strong>REACTION CHALLENGE</strong><small>Test your focus and reaction speed.</small></span><span class="game-arrow">›</span></button>
    <button class="mode-card" onclick="startMiniGame('lucky')"><span class="mode-icon">✳</span><span class="mode-copy"><strong>LUCKY SPIN</strong><small>A quick random challenge or prize round.</small></span><span class="game-arrow">›</span></button>
   </div>
+
+   <div class="game-section-label">SOLO GAMES</div>
+   <button class="mode-card" onclick="startMemoryMatch()"><span class="mode-icon">▦</span><span class="mode-copy"><strong>MEMORY MATCH</strong><small>Match electrical symbols with their names.</small></span><span class="game-arrow">›</span></button>
+   <button class="mode-card" onclick="startOhmSprint()"><span class="mode-icon">Ω</span><span class="mode-copy"><strong>OHM'S LAW SPRINT</strong><small>Solve quick electrical calculations.</small></span><span class="game-arrow">›</span></button>
+   <div class="game-section-label">COOPERATIVE TEAM GAMES</div>
+   <button class="mode-card" onclick="startCoopGame('relay')"><span class="mode-icon">↗</span><span class="mode-copy"><strong>TEAM POWER RELAY</strong><small>Take turns answering and build one shared score.</small></span><span class="game-arrow">›</span></button>
+   <button class="mode-card" onclick="startCoopGame('safety')"><span class="mode-icon">✓</span><span class="mode-copy"><strong>TEAM SAFETY RELAY</strong><small>Work together through electrical safety scenarios.</small></span><span class="game-arrow">›</span></button>
   <button class="secondary" onclick="resetToIntro()">BACK</button>
  </main>
  <main id="circuitGame" class="circuit-screen">
@@ -535,5 +554,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')resetToIntro()});
 </script>
 <script src="./circuit-master.js?v=20261103-5"></script>
 <script src="./mini-games.js?v=20261103-4"></script>
+<script src="./extra-games.js?v=20261103-1"></script>
 <script type="module" src="./cloud-sync.js"></script>
 </body></html>
