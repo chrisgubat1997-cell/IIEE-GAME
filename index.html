@@ -339,9 +339,6 @@ const PRIZE_SELECTION_RESET_DELAY=20000;
 let timerRaf=null,roundStartedAt=0,transitionTimer=null,locked=false,currentQuestion=null;
 const $=id=>document.getElementById(id);
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
-function showComingSoon(gameName){
- alert(gameName+" is listed in the game menu and will be activated when its game module is added.");
-}
 function resetToIntro(){
  if(timerRaf!==null){cancelAnimationFrame(timerRaf);timerRaf=null;}
  clearTimeout(transitionTimer);transitionTimer=null;locked=false;currentQuestion=null;
