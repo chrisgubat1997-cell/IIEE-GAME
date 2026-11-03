@@ -56,6 +56,38 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
 @media(max-height:700px){#app{padding:10px 14px}.screen{gap:9px}.reactor-wrap{width:min(43vw,210px)}.answer{min-height:65px}.hudbox{padding:6px 9px}}
 @media(max-width:390px){.answers{gap:7px}.answer{padding:9px 8px}.hud{gap:6px}}
 
+/* Refreshed touchscreen attract screen */
+.intro-screen{justify-content:center;gap:clamp(10px,2.2vh,20px);padding:clamp(8px,2vh,18px) 0}
+.intro-kicker{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font:600 clamp(9px,2vw,12px) Orbitron,Arial;letter-spacing:.16em;color:#9ac9e8;text-align:center}
+.kicker-line{height:1px;width:clamp(18px,7vw,54px);background:linear-gradient(90deg,transparent,var(--cyan))}
+.kicker-line:last-child{transform:scaleX(-1)}
+.intro-hero{width:100%;display:grid;place-items:center;min-height:0}
+.hand-stage{position:relative;width:min(58vw,300px);aspect-ratio:1;display:grid;place-items:center}
+.hand-halo{position:absolute;border:1px solid #42eaff66;border-radius:50%;inset:5%;box-shadow:0 0 24px #42eaff20,inset 0 0 24px #42eaff12}
+.halo-one{animation:haloPulse 3.2s ease-in-out infinite}
+.halo-two{inset:17%;border-style:dashed;border-color:#8c83ff88;animation:rotate 22s linear infinite}
+.hand-core{position:relative;width:68%;height:68%;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#0e4a70 0,#082747 58%,#06172b 76%);border:1px solid #55eaff88;box-shadow:0 0 25px #42eaff55,0 0 70px #168bff33,inset 0 0 32px #42eaff22}
+.tap-hand{width:76%;height:76%;overflow:visible;filter:drop-shadow(0 0 13px #42eaff99);animation:handTap 2.2s ease-in-out infinite;transform-origin:50% 72%}
+.tap-caption{position:absolute;bottom:-9%;font:600 clamp(8px,2vw,11px) Orbitron,Arial;letter-spacing:.16em;color:#8deeff;text-shadow:0 0 12px #42eaff88;white-space:nowrap}
+.tap-spark{position:absolute;color:#d9ffff;text-shadow:0 0 12px #42eaff;font-size:clamp(17px,4vw,25px);animation:sparkFloat 2.4s ease-in-out infinite}
+.spark-a{top:14%;right:8%}.spark-b{left:8%;top:38%;animation-delay:.5s}.spark-c{right:12%;bottom:18%;animation-delay:1s}
+.intro-copy{display:flex;flex-direction:column;align-items:center;gap:clamp(7px,1.4vh,13px)}
+.intro-copy h1{font-size:clamp(34px,8.5vw,66px);letter-spacing:.015em}
+.intro-copy .sub{font-size:clamp(16px,3.8vw,22px);margin:0}
+.activate-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:13px;min-height:clamp(62px,9vh,78px);border-radius:17px;letter-spacing:.09em;overflow:hidden}
+.activate-btn:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,#fff9 48%,transparent 72%);transform:translateX(-120%);animation:buttonShine 4s ease-in-out infinite}
+.button-arrow{font-size:22px;line-height:1}
+.button-pulse{width:9px;height:9px;border-radius:50%;background:#0879a8;box-shadow:0 0 0 5px #0879a822,0 0 13px #0879a8}
+.intro-footer{display:flex;align-items:center;justify-content:center;gap:10px;font:600 clamp(8px,1.8vw,10px) Orbitron,Arial;color:#7398b7;letter-spacing:.12em}
+.intro-footer i{width:3px;height:3px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+@keyframes haloPulse{0%,100%{transform:scale(.96);opacity:.55}50%{transform:scale(1.04);opacity:1}}
+@keyframes handTap{0%,100%{transform:translateY(0) scale(1)}42%{transform:translateY(9px) scale(.96)}58%{transform:translateY(2px) scale(.985)}}
+@keyframes sparkFloat{0%,100%{transform:translateY(0) scale(.9);opacity:.55}50%{transform:translateY(-8px) scale(1.15);opacity:1}}
+@keyframes buttonShine{0%,65%,100%{transform:translateX(-120%)}82%{transform:translateX(120%)}}
+@media(max-height:700px){.intro-screen{gap:8px}.hand-stage{width:min(42vw,210px)}.intro-copy{gap:5px}.intro-copy h1{font-size:clamp(30px,7vw,48px)}.activate-btn{min-height:54px}}
+@media(max-width:390px){.intro-kicker{letter-spacing:.1em}.intro-footer{gap:7px}}
+
+
 /* One-question result animations */
 .fx-screen{gap:clamp(14px,3vh,26px)}
 .fx-orb{width:min(48vw,230px);aspect-ratio:1;position:relative;display:grid;place-items:center;border-radius:50%;font-size:clamp(76px,18vw,112px);isolation:isolate}
@@ -88,13 +120,29 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
 <body>
 <div id="app">
  <header class="top"><div class="brand"><div class="mark">⚡</div><span>IIEE POWER CHALLENGE</span></div><span id="cloudStatus">LOCAL QUESTIONS</span></header>
- <main id="intro" class="screen active">
-  <div class="eyebrow">ELECTRICAL ENGINEERING QUIZ</div>
-  <div class="reactor-wrap"><div class="reactor"><div class="core"></div></div></div>
-  <h1>POWER <span>UP!</span></h1>
-  <p class="sub">Test your electrical engineering knowledge. Are you ready to energize your mind?</p>
-  <button class="primary" onclick="startGame()">TOUCH TO ACTIVATE&nbsp; ⚡</button>
-  <div class="footer">THINK FAST • STAY SHARP • POWER SAFE</div>
+ <main id="intro" class="screen active intro-screen">
+  <div class="intro-kicker"><span class="kicker-line"></span> THE ULTIMATE EE CHALLENGE <span class="kicker-line"></span></div>
+  <section class="intro-hero" aria-label="Touchscreen activation">
+   <div class="hand-stage">
+    <div class="hand-halo halo-one"></div><div class="hand-halo halo-two"></div>
+    <div class="hand-core">
+     <svg class="tap-hand" viewBox="0 0 220 220" role="img" aria-label="Open hand ready to tap the screen">
+      <defs><linearGradient id="handFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9ffff"/><stop offset=".48" stop-color="#69eaff"/><stop offset="1" stop-color="#168bff"/></linearGradient></defs>
+      <path d="M72 105V49c0-10 7-17 16-17s16 7 16 17v45-61c0-10 7-17 16-17s16 7 16 17v62-48c0-10 7-17 16-17s16 7 16 17v58-31c0-10 7-17 16-17s16 7 16 17v75c0 39-27 66-66 66h-9c-28 0-47-12-63-34l-31-42c-7-9-5-21 4-27 8-6 19-4 26 4l17 19V105z" fill="url(#handFill)" stroke="#d9fbff" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M88 103v30M120 94v39M152 103v31M184 120v20" fill="none" stroke="#07558d" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+     </svg>
+     <span class="tap-spark spark-a">✦</span><span class="tap-spark spark-b">✧</span><span class="tap-spark spark-c">✦</span>
+    </div>
+    <div class="tap-caption">TOUCH SCREEN TO BEGIN</div>
+   </div>
+  </section>
+  <div class="intro-copy">
+   <div class="eyebrow">ELECTRICAL ENGINEERING QUIZ</div>
+   <h1>POWER <span>UP!</span></h1>
+   <p class="sub">One question. One shot. Show what you know.</p>
+  </div>
+  <button class="primary activate-btn" onclick="startGame()"><span class="button-pulse"></span><span>TOUCH TO ACTIVATE</span><span class="button-arrow">↗</span></button>
+  <div class="intro-footer"><span>THINK FAST</span><i></i><span>STAY SHARP</span><i></i><span>POWER SAFE</span></div>
  </main>
  <main id="quiz" class="screen">
   <div class="hud">
