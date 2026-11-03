@@ -83,6 +83,44 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
 
 
 
+
+/* MODE SELECT + CIRCUIT MASTER */
+.mode-grid{width:100%;display:grid;grid-template-columns:1fr;gap:14px}
+.mode-card{width:100%;min-height:112px;text-align:left;display:flex;align-items:center;gap:16px;padding:18px;background:linear-gradient(145deg,#0d3152,#06172c);border:1px solid #42eaff88;color:#eafaff;box-shadow:0 0 20px #168bff22}
+.mode-icon{width:66px;height:66px;flex:none;border-radius:16px;display:grid;place-items:center;background:#42eaff16;border:1px solid #42eaff77;color:var(--cyan);font-size:34px}
+.mode-copy{display:flex;flex-direction:column;gap:5px}
+.mode-copy strong{font:700 clamp(16px,4vw,21px) Orbitron,Arial}
+.mode-copy small{font:600 15px Rajdhani,Arial;color:#a9c7df}
+.circuit-screen{width:100%;flex:1;min-height:0;display:none;flex-direction:column;justify-content:center;gap:clamp(9px,1.7vh,15px);animation:fade .5s ease}
+.circuit-screen.active{display:flex}
+.circuit-heading{text-align:center;display:grid;gap:5px}
+.circuit-heading h2{font-size:clamp(20px,5vw,30px)}
+.circuit-heading p{margin:0;color:#a9c7df;font-size:clamp(14px,3.3vw,18px)}
+.circuit-path{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;position:relative}
+.circuit-path:before{content:"";position:absolute;left:8%;right:8%;top:50%;height:3px;background:#42eaff66;box-shadow:0 0 10px #42eaff66;z-index:0}
+.circuit-slot{z-index:1;min-width:0;min-height:94px;padding:8px 4px;border:1px dashed #42eaff99;background:#061a30;color:#dffaff;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.circuit-slot strong{font:700 clamp(12px,2.8vw,17px) Orbitron,Arial;color:var(--cyan)}
+.circuit-slot small{font:600 11px Rajdhani,Arial;color:#9bb9d4}
+.circuit-slot.filled{border:1px solid #55ffc2;background:#07352f;box-shadow:0 0 15px #55ffc233}
+.slot-number{font:600 8px Orbitron,Arial;letter-spacing:.1em;color:#7fa9c8}
+.component-tray{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.component-card{min-width:0;min-height:86px;padding:8px 5px;border:1px solid #2e81ae88;background:linear-gradient(145deg,#0c2b4b,#06172c);color:#eafaff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.component-card strong{font:700 11px Orbitron,Arial;color:var(--cyan)}
+.component-card small{font:500 11px Rajdhani,Arial;color:#9bb9d4;line-height:1.05}
+.component-symbol{font:700 clamp(17px,4vw,23px) Rajdhani,Arial;color:#fff}
+.component-card.selected{border:2px solid #55ffc2;background:#074438;box-shadow:0 0 18px #55ffc255}
+.component-card.used{opacity:.25}
+.circuit-feedback{min-height:28px;text-align:center;color:#a9c7df;font-size:15px}
+.circuit-feedback.warn{color:#ffb0c0}
+.circuit-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.circuit-actions button{min-height:52px;padding:10px;font-size:clamp(11px,2.7vw,14px)}
+.circuit-actions .primary{width:100%}
+.circuit-result{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.circuit-win-icon{font-size:70px;color:var(--green);filter:drop-shadow(0 0 18px #55ffc2)}
+.circuit-explain{padding:14px;border:1px solid #55ffc266;border-radius:12px;background:#062b2a;color:#c9e9e7;font-size:16px;line-height:1.3}
+.circuit-result button{width:100%}
+@media(max-height:700px){.circuit-slot{min-height:72px}.component-card{min-height:68px}.component-card small{display:none}.mode-card{min-height:88px}}
+
 </style>
 </head>
 <body>
@@ -93,7 +131,7 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
   <div class="reactor-wrap"><div class="reactor"><div class="core"></div></div></div>
   <h1>POWER <span>UP!</span></h1>
   <p class="sub">Test your electrical engineering knowledge. Are you ready to energize your mind?</p>
-  <button class="primary" onclick="startGame()">TOUCH TO ACTIVATE&nbsp; ⚡</button>
+  <button class="primary" onclick="openModeSelect()">TOUCH TO ACTIVATE&nbsp; ⚡</button>
   <div class="footer">THINK FAST • STAY SHARP • POWER SAFE</div>
  </main>
  <main id="quiz" class="screen">
@@ -107,6 +145,38 @@ button:active{transform:scale(.975);filter:brightness(1.15)}
   <div class="answers" id="answers"></div>
   <div class="feedback" id="feedback" aria-live="polite">Choose the best answer.</div>
  </main>
+
+ <main id="modeSelect" class="screen">
+  <div class="eyebrow">SELECT YOUR CHALLENGE</div>
+  <h2>CHOOSE GAME MODE</h2>
+  <p class="sub">Choose how you want to power up.</p>
+  <div class="mode-grid">
+   <button class="mode-card" onclick="startMultipleChoice()"><span class="mode-icon">⚡</span><span class="mode-copy"><strong>MULTIPLE CHOICE</strong><small>Answer an electrical engineering question before time runs out.</small></span></button>
+   <button class="mode-card" onclick="startCircuitGame()"><span class="mode-icon">⌁</span><span class="mode-copy"><strong>CIRCUIT MASTER</strong><small>Build the correct electrical circuit using touchscreen controls.</small></span></button>
+  </div>
+  <button class="secondary" onclick="resetToIntro()">BACK</button>
+ </main>
+ <main id="circuitGame" class="circuit-screen">
+  <div id="circuitPlay">
+   <div class="circuit-heading">
+    <div class="eyebrow">CIRCUIT MASTER • LEVEL 1</div>
+    <h2>COMPLETE THE CIRCUIT</h2>
+    <p>Place the components in the correct order to safely light the lamp.</p>
+   </div>
+   <div class="hudbox"><div class="hudlabel">CIRCUIT PATH</div><div class="hudvalue" style="font-size:clamp(13px,3vw,18px)">BATTERY (+) → COMPONENTS → BATTERY (−)</div></div>
+   <div id="circuitSlots" class="circuit-path"></div>
+   <div class="qmeta"><span>COMPONENT TRAY</span><span id="attemptCount">ATTEMPTS: 0 / 3</span></div>
+   <div id="componentTray" class="component-tray"></div>
+   <div id="circuitFeedback" class="circuit-feedback">Tap a component, then tap a position on the circuit path.</div>
+   <div class="circuit-actions">
+    <button class="secondary" id="resetCircuitBtn" onclick="resetCircuitBoard()">CLEAR BOARD</button>
+    <button class="primary" id="checkCircuitBtn" onclick="checkCircuit()">CHECK CIRCUIT ⚡</button>
+   </div>
+   <button class="secondary" onclick="backToModeSelect()">MAIN MENU</button>
+  </div>
+  <div id="circuitResult" class="circuit-result hidden"></div>
+ </main>
+
  <main id="feedbackScreen" class="screen fx-screen">
   <div class="eyebrow" id="fxEyebrow">RESULT</div>
   <div class="fx-orb" id="fxOrb" aria-hidden="true">⚡</div>
@@ -252,5 +322,6 @@ window.applyCloudQuestionBank=function(bank){
 window.setCloudStatus=function(message){const el=$('cloudStatus');if(el)el.textContent=message;};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')resetToIntro()});
 </script>
+<script src="./circuit-master.js"></script>
 <script type="module" src="./cloud-sync.js"></script>
 </body></html>
