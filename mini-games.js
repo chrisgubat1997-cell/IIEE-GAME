@@ -85,11 +85,11 @@
   clearTimeout(reactionTimer);reactionReady=false;reactionStart=0;
   $("reactionPad").className="reaction-pad waiting";$("reactionPad").textContent="WAIT...";$("reactionMessage").textContent="Do not tap yet!";
   $("reactionStart").disabled=true;
-  reactionTimer=setTimeout(()=>{reactionReady=true;reactionStart=performance.now();$("reactionPad").className="reaction-pad go";$("reactionPad").textContent="TAP NOW!";},1200+Math.random()*3000);
+  reactionTimer=setTimeout(()=>{reactionReady=true;window.GameAudio?.play("go");reactionStart=performance.now();$("reactionPad").className="reaction-pad go";$("reactionPad").textContent="TAP NOW!";},1200+Math.random()*3000);
  };
  window.reactionTap=()=>{
   if(!reactionStart){if(!reactionReady){$("reactionMessage").textContent="Too soon! Press START to try again.";clearTimeout(reactionTimer);$("reactionPad").className="reaction-pad waiting";$("reactionPad").textContent="FALSE START";$("reactionStart").disabled=false;}return;}
-  const ms=Math.round(performance.now()-reactionStart);reactionStart=0;reactionReady=false;
+  const ms=Math.round(performance.now()-reactionStart);window.GameAudio?.play("win");reactionStart=0;reactionReady=false;
   $("reactionPad").className="reaction-pad done";$("reactionPad").textContent=ms+" ms";
   $("reactionMessage").textContent=ms<250?"Lightning fast!":ms<400?"Great reaction!":"Keep practicing!";
   $("reactionStart").disabled=false;$("reactionStart").textContent="TRY AGAIN";
